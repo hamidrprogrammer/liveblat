@@ -7,7 +7,7 @@ workflows:
       vars:
           XCODE_PROJECT: "Harry Pokker.xcodeproj" # <-- Put the name of your project here. 
           XCODE_SCHEME: "Harry Pokker"
-      xcode: 13.0
+      xcode: 16.0
       cocoapods: default
     scripts:
       - name: Install CocoaPods dependencies
