@@ -8,7 +8,7 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: io.codemagic.sample.iosnative
+        bundle_identifier: om.golstan.arkit.new.Zaube
       vars:
         BUNDLE_ID: "om.golstan.arkit.new.Zauber"
         XCODE_WORKSPACE: "Harry Pokker.xcworkspace" # <-- Put the name of your Xcode workspace here
