@@ -1,30 +1,47 @@
 workflows:
-  ios-app:
-    name: iOS Build
+  ios-workflow:
+    name: iOS Build for Harry Pokker
+    max_build_duration: 60
     environment:
       xcode: latest
       cocoapods: default
-      vars:
-        XCODE_WORKSPACE: "Harry Pokker.xcworkspace"
-        XCODE_SCHEME: "Harry Pokker"
+      ios_signing:
+        distribution_type: ad_hoc
+        bundle_identifier: "om.golstan.arkit.new.Zauber"
     scripts:
-      - name: Install dependencies
+      - name: Set up CocoaPods
         script: |
-          gem install cocoapods
+          cd ./Harry\ Pokker
+          pod init || echo "Podfile already exists"
+          echo "platform :ios, '16.0'" > Podfile
+          echo "use_frameworks!" >> Podfile
+          echo "target 'Harry Pokker' do" >> Podfile
+          echo "  pod 'Alamofire', '~> 5.6'" >> Podfile
+          echo "  pod 'SwiftLint'" >> Podfile
+          echo "end" >> Podfile
           pod install
+
+      - name: Set up code signing
+        script: |
+          echo $APP_STORE_CONNECT_PRIVATE_KEY | base64 --decode > /tmp/AuthKey.p8
+          xcode-project use-profiles
+
       - name: Build .ipa file
         script: |
-          xcodebuild -workspace $XCODE_WORKSPACE \
-          -scheme $XCODE_SCHEME \
-          -sdk iphoneos \
-          -configuration Release \
-          -archivePath $HOME/output/HarryPokker.xcarchive archive \
-          -allowProvisioningUpdates
-      - name: Export .ipa
-        script: |
-          xcodebuild -exportArchive \
-          -archivePath $HOME/output/HarryPokker.xcarchive \
-          -exportOptionsPlist ./exportOptions.plist \
-          -exportPath $HOME/output
+          xcode-project build-ipa \
+            --workspace "Harry Pokker.xcworkspace" \
+            --scheme "Harry Pokker" \
+            --export-method ad-hoc
+
     artifacts:
-      - $HOME/output/*.ipa
+      - build/ios/ipa/*.ipa
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      email:
+        recipients:
+          - "your-email@example.com"
+        notify:
+          success: true
+          failure: true
