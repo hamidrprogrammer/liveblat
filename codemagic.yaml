@@ -27,9 +27,7 @@ workflows:
         api_key: $APP_STORE_CONNECT_API_KEY  # Environment variable name you set in Codemagic
         key_id: $APPLE_KEY_ID                # Key ID (e.g., 3V3UA4GTAQ)
         issuer_id: $APPLE_ISSUER_ID          # Issuer ID (e.g., 5f7e640c-e4a7-4e32-b364-631385816275)
-
-      # TestFlight configuration (separate from app_store_connect)
-      testflight:
-        # Beta group must be a LIST (even if only one group)
-        beta_groups: 
-          - "External Testers" 
+        testflight:
+          # Beta group must be a LIST (even if only one group)
+          beta_groups: 
+            - "External Testers"
