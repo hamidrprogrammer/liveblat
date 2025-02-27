@@ -1,45 +1,29 @@
 workflows:
-  list_schemes:
-    name: List Xcode Schemes
-    platform: ios
-    ios:
-      build:
-        # Ensure the correct .xcodeproj or .xcworkspace path is used
-        xcode_project: "Harry Pokker.xcodeproj"  # Replace with your actual project file name
-        xcode_scheme: "Harry Pokker"  # Default scheme name
-        actions:
-          - name: List available schemes
-            script: |
-              # List available schemes in the Xcode project
-              xcodebuild -list -project "Harry Pokker.xcodeproj"
-
-
-# workflows:
-#   ios-project-debug: # workflow ID
-#     name: iOS debug # workflow name
-#     environment:
-#       xcode: latest
-#       cocoapods: default
-#       vars:
-#           XCODE_PROJECT: "Harry Pokker.xcodeproj" # <-- Put the name of your project here. 
-#           XCODE_SCHEME: "Harry Pokker" # <-- Put the name of your scheme here.
-#     scripts:
-#       - name: Run tests
-#         script: |
-#           xcodebuild \
-#           -project "$XCODE_PROJECT" \
-#           -scheme "$XCODE_SCHEME" \
-#           -sdk iphonesimulator \
-#           -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.1' \
-#           clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO          
-#       - name: Build debug app
-#         script: |
-#           xcodebuild build -project "$XCODE_PROJECT" \
-#           -scheme "$XCODE_SCHEME" \
-#           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
-#     artifacts:
-#       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-#     publishing:
-#       email:
-#         recipients:
-#           - hamidrdeveloper@gmail.com
+  ios-project-debug: # workflow ID
+    name: iOS debug # workflow name
+    environment:
+      xcode: latest
+      cocoapods: default
+      vars:
+          XCODE_PROJECT: "Harry Pokker.xcodeproj" # <-- Put the name of your project here. 
+          XCODE_SCHEME: "Harry Pokker" # <-- Put the name of your scheme here.
+    scripts:
+      - name: Run tests
+        script: |
+          xcodebuild \
+          -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.1' \
+          clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO          
+      - name: Build debug app
+        script: |
+          xcodebuild build -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
+    artifacts:
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+    publishing:
+      email:
+        recipients:
+          - hamidrdeveloper@gmail.com
