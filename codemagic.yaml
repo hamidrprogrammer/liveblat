@@ -2,23 +2,19 @@ workflows:
   ios-native-release:
     name: "Harry Pokker - TestFlight Upload"
     environment:
-      # Use the latest Xcode version (or specify a version like `14.1`)
       xcode: latest
       vars:
-        # Your project and scheme names
         XCODE_PROJECT: "Harry Pokker.xcodeproj"
         XCODE_SCHEME: "Harry Pokker"
     scripts:
       - name: Build IPA
         script: |
-          # Archive the project
           xcodebuild archive \
             -project "$XCODE_PROJECT" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
             -archivePath build/HarryPokker.xcarchive
 
-          # Export IPA for App Store
           xcodebuild -exportArchive \
             -archivePath build/HarryPokker.xcarchive \
             -exportOptionsPlist ExportOptions.plist \
@@ -27,10 +23,13 @@ workflows:
       - build/ipa/*.ipa
     publishing:
       app_store_connect:
-        # Use the API Key variables you configured
-        api_key: $APP_STORE_CONNECT_API_KEY
-        apple_issuer_id: $APPLE_ISSUER_ID
-        apple_key_id: $APPLE_KEY_ID
-      testflight:
-        # Replace with your TestFlight beta group name(s)
-        beta_groups: "External Testers"
+        # API Key Authentication (all 3 fields are REQUIRED)
+        api_key: $APP_STORE_CONNECT_API_KEY  # Environment variable name you set in Codemagic
+        key_id: $APPLE_KEY_ID                # Changed from `apple_key_id` to `key_id`
+        issuer_id: $APPLE_ISSUER_ID          # Changed from `apple_issuer_id` to `issuer_id`
+
+        # TestFlight configuration (nested under app_store_connect)
+        testflight:
+          # Beta group must be a LIST (even if only one group)
+          beta_groups: 
+            - "External Testers" 
