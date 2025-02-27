@@ -11,18 +11,19 @@ workflows:
         bundle_identifier: om.golstan.arkit.new.Zauber
       vars:
         BUNDLE_ID: "om.golstan.arkit.new.Zauber"
-        XCODE_WORKSPACE: "Harry Pokker.xcworkspace" # <-- Put the name of your Xcode workspace here
-        XCODE_SCHEME: "Harry Pokker" # <-- Put the name of your Xcode scheme here
+        XCODE_WORKSPACE: "Harry Pokker.xcworkspace"  # <-- Use workspace instead of project file if it's a workspace
+        XCODE_SCHEME: "Harry Pokker"
         APP_STORE_APPLE_ID: 6739430387
       xcode: latest
       cocoapods: default
     scripts:
       - name: Install CocoaPods dependencies
-        script: | 
+        script: |
           cd ./Harry\ Pokker
           pod init || echo "Podfile already exists"
           echo "platform :ios, '16.0'" > Podfile
           echo "use_frameworks!" >> Podfile
+          echo "project 'Harry Pokker.xcodeproj'" >> Podfile  # Ensure this is your project path
           echo "target 'Harry Pokker' do" >> Podfile
           echo "  pod 'Alamofire', '~> 5.6'" >> Podfile
           echo "  pod 'SwiftLint'" >> Podfile
@@ -56,13 +57,9 @@ workflows:
       app_store_connect:
         auth: integration
 
-        # Configuration related to TestFlight (optional)
-        # Note: This action is performed during post-processing.
         submit_to_testflight: true
-        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+        beta_groups:
           - group name 1
           - group name 2
 
-        # Configuration related to App Store (optional)
-        # Note: This action is performed during post-processing.
         submit_to_app_store: false
