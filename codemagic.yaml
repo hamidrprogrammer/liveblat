@@ -19,10 +19,14 @@ workflows:
     scripts:
       - name: Install CocoaPods dependencies
         script: | 
-          if ! pod --version &>/dev/null; then
-            echo "CocoaPods not installed. Installing CocoaPods..."
-            gem install cocoapods
-          fi
+          cd ./Harry\ Pokker
+          pod init || echo "Podfile already exists"
+          echo "platform :ios, '16.0'" > Podfile
+          echo "use_frameworks!" >> Podfile
+          echo "target 'Harry Pokker' do" >> Podfile
+          echo "  pod 'Alamofire', '~> 5.6'" >> Podfile
+          echo "  pod 'SwiftLint'" >> Podfile
+          echo "end" >> Podfile
           pod install
       - name: Set up provisioning profiles settings on Xcode project
         script: xcode-project use-profiles
