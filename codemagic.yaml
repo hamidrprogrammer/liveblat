@@ -1,47 +1,29 @@
 workflows:
-  ios-app:
-    name: iOS Build for Harry Pokker
-    max_build_duration: 60
+  ios-project-debug: # workflow ID
+    name: iOS debug # workflow name
     environment:
       xcode: latest
       cocoapods: default
-      ios_signing:
-        distribution_type: development
-        bundle_identifier: "om.golstan.arkit.new.Zauber"
+      vars:
+          XCODE_PROJECT: "Harry Pokker.xcodeproj" # <-- Put the name of your project here. 
+          XCODE_SCHEME: "Harry Pokker" # <-- Put the name of your scheme here.
     scripts:
-      - name: Set up CocoaPods
+      - name: Run tests
         script: |
-          cd ./Harry\ Pokker
-          pod init || echo "Podfile already exists"
-          echo "platform :ios, '16.0'" > Podfile
-          echo "use_frameworks!" >> Podfile
-          echo "target 'Harry Pokker' do" >> Podfile
-          echo "  pod 'Alamofire', '~> 5.6'" >> Podfile
-          echo "  pod 'SwiftLint'" >> Podfile
-          echo "end" >> Podfile
-          pod install
-
-      - name: Set up code signing
+          xcodebuild \
+          -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.1' \
+          clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO          
+      - name: Build debug app
         script: |
-          echo $APP_STORE_CONNECT_PRIVATE_KEY | base64 --decode > /tmp/AuthKey.p8
-          xcode-project use-profiles
-
-      - name: Build .ipa file
-        script: |
-          xcode-project build-ipa \
-            --workspace "Harry Pokker.xcworkspace" \
-            --scheme "Harry Pokker" \
-            --export-method ad-hoc
-
+          xcodebuild build -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
     artifacts:
-      - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - /tmp/xcodebuild_logs/*.log
-
     publishing:
       email:
         recipients:
-          - "your-email@example.com"
-        notify:
-          success: true
-          failure: true
+          - hamidrdeveloper@gmail.com
