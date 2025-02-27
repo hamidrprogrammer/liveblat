@@ -1,39 +1,36 @@
 workflows:
-  simulator-native-ios:
-    name: iOS simulator build
-    max_build_duration: 120
-    instance_type: mac_mini_m2
+  ios-native-release:
+    name: "Harry Pokker - TestFlight Upload"
     environment:
+      # Use the latest Xcode version (or specify a version like `14.1`)
+      xcode: latest
       vars:
-        XCODE_PROJECT: "Harry Pokker.xcodeproj"  # Your project file name here
-        XCODE_SCHEME: "Harry Pokker"            # Your Xcode scheme name here
-        XCODE_WORKSPACE: "Harry Pokker.xcworkspace" # Ensure workspace is set correctly
-      xcode: 16.0
-      cocoapods: default
+        # Your project and scheme names
+        XCODE_PROJECT: "Harry Pokker.xcodeproj"
+        XCODE_SCHEME: "Harry Pokker"
     scripts:
-      - name: Install CocoaPods dependencies
+      - name: Build IPA
         script: |
-          if [ ! -f "Podfile" ]; then
-            echo "No Podfile found, generating one..."
-            pod init
-            echo "platform :ios, '13.0'" > Podfile
-            echo "target 'Harry Pokker' do" >> Podfile
-            echo "  use_frameworks!" >> Podfile
-            echo "end" >> Podfile
-          fi
-          pod install
-      - name: Build the .app
-        script: |
-          xcodebuild build \
-            -workspace "$XCODE_WORKSPACE" \
+          # Archive the project
+          xcodebuild archive \
+            -project "$XCODE_PROJECT" \
             -scheme "$XCODE_SCHEME" \
-            -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=18.0' \
-            -configuration Debug \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            -configuration Release \
+            -archivePath build/HarryPokker.xcarchive
+
+          # Export IPA for App Store
+          xcodebuild -exportArchive \
+            -archivePath build/HarryPokker.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/ipa
     artifacts:
-      - /tmp/xcodebuild_logs/*.log
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+      - build/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        # Use the API Key variables you configured
+        api_key: $APP_STORE_CONNECT_API_KEY
+        apple_issuer_id: $APPLE_ISSUER_ID
+        apple_key_id: $APPLE_KEY_ID
+      testflight:
+        # Replace with your TestFlight beta group name(s)
+        beta_groups: "External Testers"
