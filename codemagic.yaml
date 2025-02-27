@@ -11,7 +11,7 @@ workflows:
         bundle_identifier: om.golstan.arkit.new.Zauber
       vars:
         BUNDLE_ID: "om.golstan.arkit.new.Zauber"
-        XCODE_WORKSPACE: "Harry Pokker.xcworkspace"  # Correct workspace file
+        XCODE_WORKSPACE: "Harry Pokker.xcodeproj"  # Correct workspace file
         XCODE_SCHEME: "Harry Pokker"  # Ensure the scheme matches the one used in Xcode
         APP_STORE_APPLE_ID: 6739430387
       xcode: latest
@@ -23,7 +23,7 @@ workflows:
           pod init || echo "Podfile already exists"
           echo "platform :ios, '16.0'" > Podfile
           echo "use_frameworks!" >> Podfile
-          echo "workspace 'Harry Pokker.xcworkspace'" >> Podfile  # Correct the workspace reference
+          echo "workspace 'Harry Pokker.xcodeproj'" >> Podfile  # Correct the workspace reference
           echo "target 'Harry Pokker' do" >> Podfile
           echo "  pod 'Alamofire', '~> 5.6'" >> Podfile
           echo "  pod 'SwiftLint'" >> Podfile
