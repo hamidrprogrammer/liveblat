@@ -1,22 +1,32 @@
 workflows:
   ios-app:
-    name: iOS App Build
+    name: Build and Deploy iOS App
     environment:
       xcode: latest
       cocoapods: default
       vars:
-        BUNDLE_ID: "com.example.myapp"
+        BUNDLE_ID: "com.yourcompany.harrypokker"
     scripts:
+      - name: Install dependencies
+        script: |
+          pod install
       - name: Build .ipa file
         script: |
-          xcodebuild -workspace MyApp.xcworkspace \
-          -scheme MyApp \
+          xcodebuild -workspace "Harry Pokker.xcodeproj/project.xcworkspace" \
+          -scheme "Harry Pokker" \
           -sdk iphoneos \
           -configuration Release \
-          -archivePath $HOME/output/MyApp.xcarchive archive
+          -archivePath $HOME/output/HarryPokker.xcarchive archive
           xcodebuild -exportArchive \
-          -archivePath $HOME/output/MyApp.xcarchive \
+          -archivePath $HOME/output/HarryPokker.xcarchive \
           -exportOptionsPlist exportOptions.plist \
           -exportPath $HOME/output
     artifacts:
       - $HOME/output/*.ipa
+    publishing:
+      email:
+        recipients:
+          - "hamidrdeveloper@gmail.com"
+        notify:
+          success: true
+          failure: true
