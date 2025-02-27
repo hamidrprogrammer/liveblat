@@ -3,16 +3,12 @@ workflows:
     name: Build and Deploy iOS App
     environment:
       xcode: latest
-      cocoapods: default
       vars:
-        BUNDLE_ID: "com.yourcompany.harrypokker"
+        BUNDLE_ID: "om.golstan.arkit.new.Zauber"
     scripts:
-      - name: Install dependencies
-        script: |
-          pod install
       - name: Build .ipa file
         script: |
-          xcodebuild -workspace "Harry Pokker.xcodeproj/project.xcworkspace" \
+          xcodebuild -project "Harry Pokker.xcodeproj" \
           -scheme "Harry Pokker" \
           -sdk iphoneos \
           -configuration Release \
@@ -26,7 +22,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - "hamidrdeveloper@gmail.com"
+          - "your-email@example.com"
         notify:
           success: true
           failure: true
