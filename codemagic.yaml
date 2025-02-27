@@ -1,0 +1,22 @@
+workflows:
+  ios-app:
+    name: iOS App Build
+    environment:
+      xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.example.myapp"
+    scripts:
+      - name: Build .ipa file
+        script: |
+          xcodebuild -workspace MyApp.xcworkspace \
+          -scheme MyApp \
+          -sdk iphoneos \
+          -configuration Release \
+          -archivePath $HOME/output/MyApp.xcarchive archive
+          xcodebuild -exportArchive \
+          -archivePath $HOME/output/MyApp.xcarchive \
+          -exportOptionsPlist exportOptions.plist \
+          -exportPath $HOME/output
+    artifacts:
+      - $HOME/output/*.ipa
